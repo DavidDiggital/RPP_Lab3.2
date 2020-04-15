@@ -3,9 +3,11 @@ package com.example.rpp_lab_32
 import android.content.ContentValues
 import android.content.Intent
 import android.database.Cursor
+import android.database.DatabaseUtils
 import android.database.sqlite.SQLiteDatabase
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import java.util.*
 
@@ -54,26 +56,31 @@ class MainActivity : AppCompatActivity() {
         values.put(DatabaseHelper.COLUMN_PATRONYMIC, parts[2])
 
         db!!.insert(DatabaseHelper.TABLE_NAME, null, values)
-
-
     }
 
     fun onClickChange(view: View?) {
-        val values = ContentValues()
-        values.put(DatabaseHelper.COLUMN_FIRST_NAME, "Иван")
-        values.put(DatabaseHelper.COLUMN_LAST_NAME, "Иванов")
-        values.put(DatabaseHelper.COLUMN_PATRONYMIC, "Иванович")
+        if (DatabaseUtils.queryNumEntries(db!!, DatabaseHelper.TABLE_NAME) > 0) {
+            val values = ContentValues()
+            values.put(DatabaseHelper.COLUMN_FIRST_NAME, "Иван")
+            values.put(DatabaseHelper.COLUMN_LAST_NAME, "Иванов")
+            values.put(DatabaseHelper.COLUMN_PATRONYMIC, "Иванович")
 
-        cursor = db!!.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_NAME + " WHERE " + DatabaseHelper.COLUMN_ID + " = (SELECT MAX("
-                + DatabaseHelper.COLUMN_ID + ") FROM " + DatabaseHelper.TABLE_NAME + ");", null)
-        cursor!!.moveToFirst()
+            cursor = db!!.rawQuery(
+                "SELECT * FROM " + DatabaseHelper.TABLE_NAME + " WHERE " + DatabaseHelper.COLUMN_ID + " = (SELECT MAX("
+                        + DatabaseHelper.COLUMN_ID + ") FROM " + DatabaseHelper.TABLE_NAME + ");",
+                null
+            )
+            cursor!!.moveToFirst()
 
-        val id = cursor!!.getString(0)
-        db!!.update(DatabaseHelper.TABLE_NAME, values, "_id = ?", arrayOf(id))
-        cursor!!.close()
+            val id = cursor!!.getString(0)
+            db!!.update(DatabaseHelper.TABLE_NAME, values, "_id = ?", arrayOf(id))
+            cursor!!.close()
+        }
+        else
+            Toast.makeText(this, "Для проведения операции в списке" + "\n" + "должен быть хотя бы один элемент",
+                Toast.LENGTH_LONG).show()
     }
-
-//    fun onClickClear(view: View?) {
-//        sqlHelper!!.deleteStudent(db!!, cursor!!.getString(0))
-//    }
+    fun onClickClear(view: View?) {
+        db!!.execSQL("DELETE FROM " + DatabaseHelper.TABLE_NAME + ";")
+    }
 }

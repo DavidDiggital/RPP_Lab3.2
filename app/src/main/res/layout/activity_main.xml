@@ -45,6 +45,6 @@
         android:layout_weight="1"
         android:background="#FFEB3B"
         android:onClick="onClickClear"
-        android:text="Удалить элемент" />
+        android:text="Очистить список" />
 
 </LinearLayout>

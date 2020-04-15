@@ -9,6 +9,19 @@ import java.util.*
 
 class DatabaseHelper(context: Context?) : SQLiteOpenHelper(context, DATABASE_NAME, null, SCHEMA) {
     private var studentsList: ArrayList<String>? = null
+
+    companion object {
+        private const val DATABASE_NAME = "students.db"
+        const val TABLE_NAME = "student"
+        private const val SCHEMA = 2
+        const val COLUMN_ID = "_id"
+        const val COLUMN_FULL_NAME = "name"
+        const val COLUMN_TIME_TO_ADD = "time"
+        const val COLUMN_FIRST_NAME = "first_name"
+        const val COLUMN_LAST_NAME = "second_name"
+        const val COLUMN_PATRONYMIC = "patronymic"
+    }
+
     override fun onCreate(db: SQLiteDatabase) {
         db.execSQL(
             "CREATE TABLE IF NOT EXISTS " + TABLE_NAME +
@@ -20,6 +33,10 @@ class DatabaseHelper(context: Context?) : SQLiteOpenHelper(context, DATABASE_NAM
                     COLUMN_TIME_TO_ADD + " DATETIME DEFAULT CURRENT_TIME" +
                     ");"
         )
+    }
+
+    init {
+        fillArrayList()
     }
 
     fun insertData(db: SQLiteDatabase) {
@@ -138,21 +155,5 @@ class DatabaseHelper(context: Context?) : SQLiteOpenHelper(context, DATABASE_NAM
         studentsList!!.add("Чехуров Денис Александрович")
         studentsList!!.add("Эльшейх Самья Ахмед")
         studentsList!!.add("Юров Илья Игоревич")
-    }
-
-    companion object {
-        private const val DATABASE_NAME = "students.db"
-        const val TABLE_NAME = "student"
-        private const val SCHEMA = 2
-        const val COLUMN_ID = "_id"
-        const val COLUMN_FULL_NAME = "name"
-        const val COLUMN_TIME_TO_ADD = "time"
-        const val COLUMN_FIRST_NAME = "first_name"
-        const val COLUMN_LAST_NAME = "second_name"
-        const val COLUMN_PATRONYMIC = "patronymic"
-    }
-
-    init {
-        fillArrayList()
     }
 }
